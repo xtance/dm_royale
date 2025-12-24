@@ -36,7 +36,7 @@ Instance.OnScriptInput("each_second", function () {
 	let ring = Instance.FindEntityByName(`ring_${count}`);
 	if (ring) {
 		Instance.Msg(`[xta] ring ${count} exists`);
-		ring.Teleport({ position: position, angles: { pitch: 90, yaw: 0, roll: 0 } });
+		ring.Teleport({ position: position, angles: { pitch: /* 90 */0, yaw: 0, roll: 0 } });
 		ring.SetColor({ r: 0, g: 255, b: 0, a: 150 });
 		//ring.Glow({ r: 0, g: 255, b: 0, a: 255 });
 
@@ -61,7 +61,7 @@ Instance.OnScriptInput("each_second", function () {
 		if (pos) {
 			Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z}`);
 
-			let inside = isPlayerInside(25, count, position.x, position.y, pos.x, pos.y);
+			let inside = isPlayerInside(144/* 25 */, count, position.x, position.y, pos.x, pos.y);
 			player.SetHealth(inside ? 100 : Math.max(0, player.GetHealth() - 1));
 		}
 
@@ -76,8 +76,9 @@ Instance.OnScriptInput("each_10_second", function () {
 
 		Instance.Msg("[xta] (each_10_second)");
 		count--;
-		Instance.ServerCommand(`ent_create prop_dynamic {\"targetname\" \"ring_${count}\" \"model\" \"models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl\" \"modelscale\" \"${count}\" \"renderamt\" \"0\"}`);
-
+		//Instance.ServerCommand(`ent_create prop_dynamic {\"targetname\" \"ring_${count}\" \"model\" \"models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl\" \"modelscale\" \"${count}\" \"renderamt\" \"0\"}`);
+Instance.ServerCommand(`ent_create prop_dynamic {\"targetname\" \"ring_${count}\" \"model\" \"models/anubis/trims/stone_trim_point_a.vmdl\" \"modelscale\" \"${count}\" \"renderamt\" \"0\"}`);
+//
 	}
 	//Instance.ServerCommand(`ent_create prop_dynamic {\"model\" \"models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl\" \"modelscale\" \"2\"}`)
 	// ent_create prop_dynamic {"model" "models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl" "modelscale" "2"}
