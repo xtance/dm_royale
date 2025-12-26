@@ -28,7 +28,7 @@ function randomInt(min, max) {
 }
 
 function for10(cb) {
-	for (let i = 0; i < 10; i++) {
+	for (let i = 1; i <= 3; i++) {
 		cb(i);
 	}
 }
@@ -58,55 +58,55 @@ Instance.OnRoundEnd(function () {
 
 
 Instance.OnScriptInput("each_second", function () {
-	Instance.Msg("[xta] (each_second)");
-	let prevChanged = false;
+	// Instance.Msg("[xta] (each_second)");
+	// let prevChanged = false;
 
-	for10(i => {
-		let ring = Instance.FindEntityByName(`ring_${count}_${i}`);
-		if (ring) {
-			Instance.Msg(`[xta] ring ${count} exists`);
-			ring.Teleport({ position: { x: position.x, y: position.y, z: position.z + (i * 256) }, angles: { pitch: /* 90 */0, yaw: 0, roll: 0 } });
-			ring.SetColor({ r: 0, g: 255, b: 0, a: 200 });
-			//ring.Glow({ r: 0, g: 255, b: 0, a: 255 });
+	// for10(i => {
+	// 	let ring = Instance.FindEntityByName(`ring_${count}_${i}`);
+	// 	if (ring) {
+	// 		Instance.Msg(`[xta] ring ${count} exists`);
+	// 		ring.Teleport({ position: { x: position.x, y: position.y, z: position.z + (i * 256) }, angles: { pitch: /* 90 */0, yaw: 0, roll: 0 } });
+	// 		ring.SetColor({ r: 0, g: 255, b: 0, a: 200 });
+	// 		//ring.Glow({ r: 0, g: 255, b: 0, a: 255 });
 
-			if (prevCount !== count) {
-				let previousRing = Instance.FindEntityByName(`ring_${prevCount}_${i}`);
-				if (previousRing) {
-					Instance.Msg(`[xta] previousRing exists `);
-					previousRing.Kill();
-				}
-				prevChanged = true;
-			}
-		}
-	});
+	// 		if (prevCount !== count) {
+	// 			let previousRing = Instance.FindEntityByName(`ring_${prevCount}_${i}`);
+	// 			if (previousRing) {
+	// 				Instance.Msg(`[xta] previousRing exists `);
+	// 				previousRing.Kill();
+	// 			}
+	// 			prevChanged = true;
+	// 		}
+	// 	}
+	// });
 
-	if (prevChanged) {
-		prevCount = count;
-		prevChanged = false;
-	}
-
-
+	// if (prevChanged) {
+	// 	prevCount = count;
+	// 	prevChanged = false;
+	// }
 
 
-	let players = Instance.FindEntitiesByClass("player");
-	Instance.Msg(`[xta] array = ${players.length}`);
 
-	for (let player of players) {
-		Instance.Msg(`[xta] player !!!`);
-		if (player.IsValid() && (player.GetTeamNumber() === 2 || player.GetTeamNumber() === 3)) {
-			let pos = player.GetAbsOrigin();
-			if (pos) {
-				let inside = isPlayerInside(modelDiameter, count, position.x, position.y, pos.x, pos.y);
-				Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
 
-				if (!inside) {
-					let health = player.GetHealth();
-					if (health > 1) player.TakeDamage({ damage: 1 }); //player.SetHealth(health - 1);
-					else player.Kill();
-				}
-			}
-		}
-	}
+	// let players = Instance.FindEntitiesByClass("player");
+	// Instance.Msg(`[xta] array = ${players.length}`);
+
+	// for (let player of players) {
+	// 	Instance.Msg(`[xta] player !!!`);
+	// 	if (player.IsValid() && (player.GetTeamNumber() === 2 || player.GetTeamNumber() === 3)) {
+	// 		let pos = player.GetAbsOrigin();
+	// 		if (pos) {
+	// 			let inside = isPlayerInside(modelDiameter, count, position.x, position.y, pos.x, pos.y);
+	// 			Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
+
+	// 			if (!inside) {
+	// 				let health = player.GetHealth();
+	// 				if (health > 1) player.TakeDamage({ damage: 1 }); //player.SetHealth(health - 1);
+	// 				else player.Kill();
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 });
 
@@ -117,7 +117,10 @@ Instance.OnScriptInput("each_10_second", function () {
 		count--;
 		//Instance.ServerCommand(`ent_create prop_dynamic {\"targetname\" \"ring_${count}\" \"model\" \"models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl\" \"modelscale\" \"${count}\" \"renderamt\" \"0\"}`);
 		for10(i => {
-			Instance.ServerCommand(`ent_create prop_dynamic {\"targetname\" \"ring_${count}_${i}\" \"model\" \"${modelName}\" \"modelscale\" \"${count}\" \"renderamt\" \"0\" \"disableshadows\" \"1\" }`); // 
+
+			Instance.EntFireAtName({ name: `ring_${i}`, input: "SetScale", value: `${i}`, delay: 0.00 });
+
+			//Instance.ServerCommand(`ent_create prop_dynamic {\"targetname\" \"ring_${count}_${i}\" \"model\" \"${modelName}\" \"modelscale\" \"${count}\" \"renderamt\" \"0\" \"disableshadows\" \"1\" }`); // 
 		});
 		//
 	}
