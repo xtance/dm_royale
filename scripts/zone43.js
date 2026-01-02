@@ -4,7 +4,6 @@ let maxCount = 200;
 let minCount = 10;
 let moves = 0;
 
-let modelName = `models/props/de_nuke/hr_nuke/medium_silo_frame/medium_silo_frame.vmdl` //`models/anubis/trims/stone_trim_point_a.vmdl`;
 let modelDiameter = 256;
 
 let magnetName = `magnet_`;
@@ -12,7 +11,6 @@ let minMagnet = 1;
 let maxMagnet = 8;
 
 let count = maxCount;
-let prevCount = 0;
 let position = { x: 0.0, y: 0.0, z: 0.0 };
 let isRoundEnd = false;
 
@@ -56,16 +54,6 @@ Instance.OnRoundEnd(function () {
 Instance.OnScriptInput("each_second", function () {
 
 	let players = Instance.FindEntitiesByClass("player");
-	Instance.Msg(`[xta] (each_second), array = ${players.length}`);
-
-	if (isRoundEnd) {
-		for (let player of players) {
-			if (player && player.IsValid()) {
-				player.Kill();
-			}
-		}
-		return;
-	}
 
 	if (count > minCount) {
 		count -= 0.1;
@@ -82,26 +70,31 @@ Instance.OnScriptInput("each_second", function () {
 			}
 		});
 	}
-	
-	moves += 1;
-	if (moves % 10 === 0){
-		for (let player of players) {
-			Instance.Msg(`[xta] player !!!`);
-			if (player.IsValid() && (player.GetTeamNumber() === 2 || player.GetTeamNumber() === 3)) {
-				let pos = player.GetAbsOrigin();
-				if (pos) {
-					let inside = isPlayerInside(modelDiameter, count, position.x, position.y, pos.x, pos.y);
-					Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
 
-					if (!inside) {
-						let health = player.GetHealth();
-						if (health > 1) player.TakeDamage({ damage: 1 }); //player.SetHealth(health - 1);
-						else player.Kill();
+	moves += 1;
+	if (moves % 10 === 0) {
+		for (let player of players) {
+			if (player.IsValid() && (player.GetTeamNumber() === 2 || player.GetTeamNumber() === 3)) {
+				if (isRoundEnd) {
+					player.Kill();
+				}
+				else {
+					let pos = player.GetAbsOrigin();
+					if (pos) {
+						let inside = isPlayerInside(modelDiameter, count, position.x, position.y, pos.x, pos.y);
+						Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
+
+						if (!inside) {
+							let health = player.GetHealth();
+							if (health > 1) player.TakeDamage({ damage: 1 }); //player.SetHealth(health - 1);
+							else player.Kill();
+						}
 					}
 				}
 			}
 		}
 	}
+
 	//Instance.ServerCommand(`ent_create prop_dynamic {\"model\" \"models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl\" \"modelscale\" \"2\"}`)
 	// ent_create prop_dynamic {"model" "models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl" "modelscale" "2"}
 
