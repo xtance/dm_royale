@@ -33,6 +33,39 @@ function for10(cb) {
 	//}
 }
 
+function removeRandomPercent(arr, percent) {
+  if (percent <= 0) return [...arr];
+  if (percent >= 100) return [];
+
+  const countToRemove = Math.floor(arr.length * (percent / 100));
+  const indices = arr.map((_, i) => i);
+
+  // Fisher–Yates shuffle индексов
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+
+  const removeSet = new Set(indices.slice(0, countToRemove));
+
+  return Array.from(removeSet);
+}
+
+function removeLoot(){
+	try {
+		const allLoot = Instance.FindEntitiesByName("loot");
+		const unluckyLoot = removeRandomPercent(allLoot, 33);
+		Instance.Msg(`[xta] removing ${unluckyLoot.length} loot`);
+
+		for (let entity of unluckyLoot) {
+			if (entity.IsValid()){
+				entity.Kill();
+			}
+		}
+	}catch(e){
+		Instance.Msg(`[xta] removeLoot exception ${e}`);
+	}
+}
 
 Instance.Msg("[xta] (inst!)");
 
@@ -45,6 +78,7 @@ Instance.OnRoundStart(function () {
 	let magnet = Instance.FindEntityByName(`${magnetName}${random}`);
 	position = magnet ? magnet.GetAbsOrigin() : { x: 0.0, y: 0.0, z: 0.0 };
 	Instance.Msg(`[xta] (abcdef position = (${position?.x} ${position?.y} ${position?.z}))`);
+	removeLoot();
 });
 
 Instance.OnRoundEnd(function () {
