@@ -66,6 +66,8 @@ function removeLoot() {
 				Instance.Msg(`[xta] removeLoot exception 1 ${e}`);
 			}
 		}
+
+		
 	} catch (e) {
 		Instance.Msg(`[xta] removeLoot exception 2 ${e}`);
 	}
