@@ -3,9 +3,10 @@ import { Instance } from "cs_script/point_script";
 let maxCount = 200;
 let minCount = 10;
 let moves = 0;
+let percent = 30;
 
 let modelDiameter = 256;
-
+ 
 let magnetName = `magnet_`;
 let minMagnet = 1;
 let maxMagnet = 8;
@@ -54,7 +55,7 @@ function removeRandomPercent(arr, percent) {
 function removeLoot() {
 	try {
 		const allLoot = Instance.FindEntitiesByClass("prop_door_rotating").filter(entity => entity.IsValid() && entity.GetParent && entity.GetParent()?.GetEntityName() === "loot");
-		const unluckyLoot = removeRandomPercent(allLoot, 30);
+		const unluckyLoot = removeRandomPercent(allLoot, percent);
 		Instance.Msg(`[xta] removing ${unluckyLoot.length} loot`);
 
 		for (let entity of unluckyLoot) {
@@ -98,9 +99,8 @@ Instance.OnScriptInput("each_second", function () {
 		for10(i => {
 			let ring = Instance.FindEntityByName(`ring_${i}`);
 			if (ring) {
-				Instance.Msg(`[xta] ring ${i} exists`);
 				ring.Teleport({ position: { x: position.x, y: position.y, z: position.z + (i * 512) }, angles: { pitch: /* 90 */0, yaw: 0, roll: 0 } });
-				ring.SetColor({ r: 255, g: 255, b: 255, a: 200 });
+				//ring.SetColor({ r: 255, g: 255, b: 255, a: 200 });
 				//ring.Glow({ r: 0, g: 255, b: 0, a: 255 });
 
 				Instance.EntFireAtTarget({ target: ring, input: "SetScale", value: `${count}`, delay: 0.00 });
@@ -119,7 +119,7 @@ Instance.OnScriptInput("each_second", function () {
 					let pos = player.GetAbsOrigin();
 					if (pos) {
 						let inside = isPlayerInside(modelDiameter, count, position.x, position.y, pos.x, pos.y);
-						Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
+						//Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
 
 						if (!inside) {
 							let health = player.GetHealth();
