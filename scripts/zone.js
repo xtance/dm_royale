@@ -91,12 +91,30 @@ Instance.OnRoundEnd(function () {
 	isRoundEnd = true;
 });
 
+function getZoneSpeed(playerCount = 1){
+	switch (playerCount) {
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			return 0.2;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+			return 0.15;
+		default:
+			return 0.1;
+	}
+}
+
 Instance.OnScriptInput("each_second", function () {
 
 	let players = Instance.FindEntitiesByClass("player");
+	let alivePlayers = players.filter(player => player.IsValid() && player.IsAlive());
 
 	if (count > minCount) {
-		count -= 0.1;
+		count -= getZoneSpeed(alivePlayers?.length ?? 2);
 		//Instance.ServerCommand(`ent_create prop_dynamic {\"targetname\" \"ring_${count}\" \"model\" \"models/props/de_train/hr_train_s2/train_hvac/train_hvac_24_snap_ring_01.vmdl\" \"modelscale\" \"${count}\" \"renderamt\" \"0\"}`);
 		for10(i => {
 			let ring = Instance.FindEntityByName(`ring_${i}`);
@@ -121,12 +139,12 @@ Instance.OnScriptInput("each_second", function () {
 					let pos = player.GetAbsOrigin();
 					if (pos) {
 						let inside = isPlayerInside(modelDiameter, count, position.x, position.y, pos.x, pos.y);
-						//Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
+						Instance.Msg(`[xta] ${pos.x},${pos.y},${pos.z} = ${inside}`);
 
 						if (!inside) {
 							let health = player.GetHealth();
 							if (health > 1) player.TakeDamage({ damage: 5 }); //player.SetHealth(health - 1);
-							else player.Kill();
+							else player.Kill(); 
 						}
 					}
 				}
